@@ -1,2 +1,2 @@
-# Solidity-languaje
+# Solidity-language
 Some Solidity projects
