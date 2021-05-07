@@ -1,82 +1,128 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.5.2;
 
-import "Individual.sol";
-import "Agent.sol";
-
-/// @title Egalitarian social welfare in Smart contracts
+/// @title Egalitarian social welfare in smart contracts
 /// @author J. Carrero
-contract Auction {
+contract Algorithm {
+    // Agent
+    struct Agent {
+        uint idAgent;
+        address direction;
+        uint[] preferences;
+    }
     Agent[] agents;
+    mapping(address => bool) registered;
+    
+    // Auction
+    address payable owner;
+    uint endBlock;
+    uint fee;
+    uint registrations = 10;
+    
+    // Invididual
+    struct Individual {
+        uint fitness;
+        uint[] genes;
+    }
     Individual[] population;
-    uint[] result;
-    uint elitism;
+    uint geneLength;
+    
+    // Algorithm
     uint crossoverRate;
     uint mutationRate;
+    uint elitism;
     uint nonce;
-
-    /// @notice Contructor del contraro 'Population'
-    /// @param _numAgents número de agentes que intervienen en el repart
-    /// @param _numResources indica el número de recursos disponibles
-    /// @param _elitism indica si la población será elitista (almacenará el fittest)
-    constructor(uint _elitism) public {
+    
+    /// @notice Main constructor
+    constructor(uint _elitism, uint _crossoverRate, uint _mutationRate, uint _duration, uint _fee) public {
         elitism = _elitism;
-        crossoverRate = 2;
-        mutationRate = 4;
-        nonce = 0;
+        crossoverRate = _crossoverRate;
+        mutationRate = _mutationRate;
+        geneLength = 5;
+        endBlock = block.number + _duration; // 40 blocks = 10 min
+        owner = msg.sender;
+        fee = _fee;
+        nonce = 0; 
     }
     
-    /// @notice Evoluciona la población almacenando el Fittest en cada evolución
-    /// @param _iterations número de veces que evoluciona la población
-    /// @return todos los valores fittest obtenidos
-    function evolvePop(uint _iterations) public {
-        result = new uint[](_iterations);
-        for(uint i = 0; i < _iterations; i++){
-            Individual bestIndiv = getBest();
-            if(elitism == 1) // is it elitism?
-                population[0] = bestIndiv; // Save best indiv
-            result[i] = bestIndiv.getFitness(); // Save its fitness in our fittest' vector
-            //crossover(); // Crossover phase
-            //mutate(); // Mutation phase
-            calculateFitness(); // Get fitness phase
-        }
+    // ---------- Modifiers ----------
+        
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can do this.");
+        _;
     }
     
-    /// @notice Create a new individual
+    modifier notOwner() {
+        require(msg.sender != owner, "Owner can't participate.");
+        _;
+    }
+    
+    modifier onlyBeforeEnd() {
+        require(block.number <= endBlock, "Registration already ended.");
+        _;
+    }
+    
+    modifier onlyAfterEnd() {
+        require(block.number > endBlock, "Registration is still active.");
+        _;
+    }
+    
+    modifier participationLimit() {
+        require(agents.length > registrations, "Participant limit reached.");
+        _;
+    }
+    
+    // ---------- Agent functions ----------
+    
+    /// @return get agent' information
+    function getAgentInfo(uint _index) onlyOwner public view returns(uint, address, uint[] memory) {
+        require(_index < agents.length && _index >= 0, "Invalid index.");
+        return (agents[_index].idAgent, agents[_index].direction, agents[_index].preferences);
+    }
+    
+    /// @notice Register a new participant
+    /// @param _preferences agent' preferences
+    function regAgent(uint[] memory _preferences) notOwner onlyBeforeEnd public {
+        require(msg.sender.balance - fee >= 0, "You can't pay the fee.");
+        require(!registered[msg.sender], "Agent is already registered.");
+        Agent memory newAgent = Agent(agents.length, msg.sender, _preferences);
+        agents.push(newAgent);
+        registered[msg.sender] = true;
+        // the agent must pay the fee to participate.
+        // owner must recieve that fee
+    }
+    
+    // ---------- Individual functions ----------
+    
+    /// @notice create a new individual
     /// @param _popSize population' size
-    function createIndiv(uint _popSize) public{
-        for(uint i = 0; i < _popSize; i++){  
-            Individual newIndiv = new Individual();
-            newIndiv.createIndividual(i, agents.length);
+    function createIndiv(uint _popSize) onlyOwner onlyAfterEnd public {
+        for(uint i = 0; i < _popSize; i++){ 
+            uint[] memory genes = new uint[](geneLength);
+            for(uint r = 0; r < geneLength; r++){
+                genes[r] = random(agents.length);
+            }
+            Individual memory newIndiv = Individual(0, genes);
             population.push(newIndiv);
         }
     }
     
-    /// @notice Registra a un nuevo agente a la subasta
-    /// @param _idAgent id del agente
-    /// @param _direction direccion de cartera del agente
-    /// @param _O_preferences preferencias del agente
-    function regAgent(uint _idAgent, address _direction, uint[] _O_preferences) public{
-        Agent newAgent = new Agent(_idAgent, _direction, _O_preferences);
-        agents.push(newAgent);
-    }
+    // ---------- Algorithm functions ----------
     
     /// @notice Calcular el fitness de la población
-    function calculateFitness() public{
+    function calculateFitness() onlyOwner onlyAfterEnd public {
         for(uint j = 0; j < population.length; j++){
             uint[] memory assignments = new uint[](agents.length);
-            for(uint i = 0; i < population[j].getGenesLenght(); i++){
-                uint[] memory pref;
-                (,,pref) = agents[population[j].getGene(i)].getAgentInfo(); // We get preferences for current agent
-                assignments[population[j].getGene(i)] += pref[i];
+            for(uint i = 0; i < geneLength; i++){
+                assignments[population[j].genes[i]] += agents[population[j].genes[i]].preferences[i];
             }
-            population[j].setFitness(getMin(assignments));
+            population[j].fitness = getMin(assignments);
         } 
     }
     
-    /// @notice Retorna la utilidad mínima entre todos los agentes
-    /// @param _assignments acumulación de las utilidades
-    /// @return la utilidad mínima
-    function getMin(uint[] _assignments) internal pure returns(uint){
+    /// @notice Returns the minimum utility among all agents
+    /// @param _assignments accumulation of utilities
+    /// @return the minimum utility
+    function getMin(uint[] memory _assignments) internal pure returns(uint) {
         uint min = _assignments[0];
         for(uint r = 0; r < _assignments.length; r++){
             if(_assignments[r] < min)
@@ -86,85 +132,48 @@ contract Auction {
     }
     
     /// @notice Realiza el cruzamiento de los individuos de la población
-    function crossover() public{
+    function crossover() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
-            Individual newIndiv = new Individual();
-            for(uint i = 0; i < population[k].getGenesLenght(); i++){
-                uint index1 = random(population.length);
-                uint index2 = random(population.length);  
+            for(uint i = 0; i < geneLength; i++){
                 if(random(crossoverRate) < 10)
-                    newIndiv.setGene(i, population[index1].getGene(i));
+                    population[k].genes[i] = population[random(population.length)].genes[i];
                 else
-                    newIndiv.setGene(i, population[index2].getGene(i));
+                    population[k].genes[i] = population[random(population.length)].genes[i];
             }
-            population[k] = newIndiv;
         }
     }
     
     /// @notice Realiza la mutación de los individuos de la población
-    function mutate() public{
+    function mutate() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
-            for(uint i = 0; i < population[k].getGenesLenght(); i++){
+            for(uint i = 0; i < geneLength; i++){
                 if(random(mutationRate) < 10){
-                    uint gene = random(agents.length);
-                    population[k].setGene(i, gene);
+                    population[k].genes[i] = random(agents.length);
                 }
             }
         }
     }
     
-    /// @notice Selecciona al mejor individuo de la población
-    /// @return El individuo
-    function getBest() internal returns (Individual) {
-        Individual best = new Individual();
-        best = population[0];
-        for(uint i = 1; i < population.length; i++){
-            if(best.getFitness() < population[i].getFitness())
-                best = population[i];
-        }
-        return best;
-    }
-    
-    /// @notice Retorna el tamaño de la población
-    /// @return El tamaño
-    function getPopSize() public view returns(uint){
-        return population.length;
-    }
-    
-    /// @notice Retorna cuantos agentes hay en la subasta
-    /// @return El tamaño
-    function getAgentSize() public view returns(uint){
-        return agents.length;
-    }
-    
-    
-    /// @notice Retorna los genes de un individuo de la población
-    /// @param _index índice del individuo
-    /// @return vector de genes
-    function getIndivGenes(uint _index) external view returns (uint[]) {
-        return population[_index].getGenes();
-    }
-    
     /// @notice Genera un número aleatorio dentro de un intervalo
     /// @param _interval índice superior del intervalo (abierto) del valor random
     /// @dev now, msg.sender y nonce son el timestamp del bloque, quién hizo la llamada y un número incremental respectivamente
-    /// @return el número generado
-    function random(uint _interval) public returns (uint) {
-        uint randomnumber = uint(keccak256(abi.encodePacked(now, msg.sender, nonce))) % _interval;
+    /// @return El número generado
+    function random(uint _interval) internal returns (uint) {
+        uint randNumber = uint(keccak256(abi.encodePacked(now, msg.sender, nonce))) % _interval;
         nonce++;
-        return randomnumber;
-    }
-
-    /// @notice Obtiene el fitness de un determinado individuo
-    /// @param _index índice del individuo
-    /// @return el valor fitness
-    function getFitnessIndiv(uint _index) public view returns(uint){
-        return population[_index].getFitness();
+        return randNumber;
     }
     
-    /// @notice Retorna el fittest de cada evolución de la población
-    /// @return el vector de resultados
-    function getResult() public view returns(uint[]){
-        return result;
+    // ---------- Support functions ----------
+    
+    /// @notice Selecciona al mejor individuo de la población
+    /// @return El individuo
+    function getBest() onlyAfterEnd public view returns (uint, uint[] memory) {
+        Individual memory best = population[0];
+        for(uint i = 1; i < population.length; i++){
+            if(best.fitness < population[i].fitness)
+                best = population[i];
+        }
+        return (best.fitness, best.genes);
     }
 }
