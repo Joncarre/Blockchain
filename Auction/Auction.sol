@@ -1,4 +1,4 @@
-pragma solidity ^0.5.2;
+pragma solidity ^0.6.6;
 
 /// @title Egalitarian social welfare in smart contracts
 /// @author J. Carrero
@@ -10,13 +10,15 @@ contract Algorithm {
         uint[] preferences;
     }
     Agent[] agents;
+    mapping(address => bool) paid;
     mapping(address => bool) registered;
     
     // Auction
     address payable owner;
     uint endBlock;
     uint fee;
-    uint registrations = 10;
+    uint registrations = 10; // Limit of participants
+    uint public amount; // Ether to pay the gas
     
     // Invididual
     struct Individual {
@@ -42,8 +44,24 @@ contract Algorithm {
         owner = msg.sender;
         fee = _fee;
         nonce = 0; 
+        amount = 0;
     }
     
+    bool locked;
+    modifier noReentrancy() {
+        require(!locked, "Reentrant call.");
+        locked = true;
+        _;
+        locked = false;
+    }
+    
+    receive() external payable {
+        require(msg.value >= fee, "You must pay the fee.");
+        require(!paid[msg.sender], "You can't register twice.");
+        amount += msg.value; 
+        paid[msg.sender] = true;
+    }
+
     // ---------- Modifiers ----------
         
     modifier onlyOwner() {
@@ -82,13 +100,17 @@ contract Algorithm {
     /// @notice Register a new participant
     /// @param _preferences agent' preferences
     function regAgent(uint[] memory _preferences) notOwner onlyBeforeEnd public {
-        require(msg.sender.balance - fee >= 0, "You can't pay the fee.");
+        require(paid[msg.sender], "Please, pay the fee before registration.");
         require(!registered[msg.sender], "Agent is already registered.");
         Agent memory newAgent = Agent(agents.length, msg.sender, _preferences);
         agents.push(newAgent);
         registered[msg.sender] = true;
-        // the agent must pay the fee to participate.
-        // owner must recieve that fee
+    }
+    
+    /// @notice allows withdrawal of money deposited by participants
+    function withdraw() public onlyOwner onlyAfterEnd noReentrancy {
+        (bool success, ) = owner.call{value:amount}('');
+        require(success, "Transfer failed.");
     }
     
     // ---------- Individual functions ----------
@@ -159,7 +181,7 @@ contract Algorithm {
     /// @dev now, msg.sender y nonce son el timestamp del bloque, quién hizo la llamada y un número incremental respectivamente
     /// @return El número generado
     function random(uint _interval) internal returns (uint) {
-        uint randNumber = uint(keccak256(abi.encodePacked(now, msg.sender, nonce))) % _interval;
+        uint randNumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % _interval;
         nonce++;
         return randNumber;
     }
