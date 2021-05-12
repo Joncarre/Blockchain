@@ -130,7 +130,7 @@ contract Algorithm {
     
     // ---------- Algorithm functions ----------
     
-    /// @notice Calcular el fitness de la población
+    /// @notice Calculate the fitness of the population
     function calculateFitness() onlyOwner onlyAfterEnd public {
         for(uint j = 0; j < population.length; j++){
             uint[] memory assignments = new uint[](agents.length);
@@ -153,7 +153,7 @@ contract Algorithm {
         return min;
     }
     
-    /// @notice Realiza el cruzamiento de los individuos de la población
+    /// @notice Performs the crossover of the individuals of the population
     function crossover() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
             for(uint i = 0; i < geneLength; i++){
@@ -165,7 +165,7 @@ contract Algorithm {
         }
     }
     
-    /// @notice Realiza la mutación de los individuos de la población
+    /// @notice Performs the mutation of the individuals of the population
     function mutate() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
             for(uint i = 0; i < geneLength; i++){
@@ -176,10 +176,10 @@ contract Algorithm {
         }
     }
     
-    /// @notice Genera un número aleatorio dentro de un intervalo
-    /// @param _interval índice superior del intervalo (abierto) del valor random
-    /// @dev now, msg.sender y nonce son el timestamp del bloque, quién hizo la llamada y un número incremental respectivamente
-    /// @return El número generado
+    /// @notice Generates a random number within an interval
+    /// @param _interval upper index of the (open) interval of the random value
+    /// @dev now, msg.sender and nonce are the timestamp of the block, who made the call and an incremental number respectively
+    /// @return The number generated
     function random(uint _interval) internal returns (uint) {
         uint randNumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % _interval;
         nonce++;
@@ -188,8 +188,8 @@ contract Algorithm {
     
     // ---------- Support functions ----------
     
-    /// @notice Selecciona al mejor individuo de la población
-    /// @return El individuo
+    /// @notice gets the best individual of the population
+    /// @return The fittest 
     function getBest() onlyAfterEnd public view returns (uint, uint[] memory) {
         Individual memory best = population[0];
         for(uint i = 1; i < population.length; i++){
