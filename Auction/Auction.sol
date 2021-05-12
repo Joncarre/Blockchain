@@ -46,6 +46,8 @@ contract Algorithm {
         nonce = 0; 
         amount = 0;
     }
+  
+    // ---------- Modifiers ----------
     
     bool locked;
     modifier noReentrancy() {
@@ -54,15 +56,6 @@ contract Algorithm {
         _;
         locked = false;
     }
-    
-    receive() external payable {
-        require(msg.value >= fee, "You must pay the fee.");
-        require(!paid[msg.sender], "You can't register twice.");
-        amount += msg.value; 
-        paid[msg.sender] = true;
-    }
-
-    // ---------- Modifiers ----------
         
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can do this.");
@@ -87,6 +80,13 @@ contract Algorithm {
     modifier participationLimit() {
         require(agents.length > registrations, "Participant limit reached.");
         _;
+    }
+    
+    receive() external payable {
+        require(msg.value >= fee, "You must pay the fee.");
+        require(!paid[msg.sender], "You can't register twice.");
+        amount += msg.value; 
+        paid[msg.sender] = true;
     }
     
     // ---------- Agent functions ----------
