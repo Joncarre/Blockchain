@@ -28,7 +28,7 @@ Once the agents have registered, the contract owner can consult the information 
 
 During this and the following phases, there are certain restrictions on the execution of functions. These restrictions help us to have a better organization over the privileges of the roles involved in the auction, as well as to make sure that malicious agents cannot misuse the contract. For example: if an agent tries to register in the auction before paying the registration fee, the transaction will be rejected and you will get the following error:
 
-`transact to Algorithm.regAgent errored: VM error: revert. revert The transaction has been reverted to the initial state. Reason provided by the contract: "Please, pay the fee before registration".`
+> `transact to Algorithm.regAgent errored: VM error: revert. revert The transaction has been reverted to the initial state. Reason provided by the contract: "Please, pay the fee before registration".`
 
 All the restrictions can be consulted in the code by looking at the `modifier` and `require` tags. Continuing with the execution, in our example we have registered 3 agents in the auction and each one has paid a fee of 2 Ether (2000000000 gwei). When we switch back to the owner's address and look at the money stored in the contract, we indeed see that there are 6 Ethers.
 
