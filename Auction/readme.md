@@ -1,10 +1,12 @@
-# Egalitarian social welfare into Ethereum blockchain
+**Egalitarian social welfare into Ethereum blockchain**
+==============
+----------
 
 We present the code of a smart contract that allows auctions where the objective is egalitarian social welfare, i.e., maximizing the utility of the agent (participant) that receives the least utility once the auction has ended. The idea of this contract is as follows: an entity (owner of the contract) deploys the contract on the Ethereum blockchain and opens a registration period. During that time, agents can register for the auction having paid a registration fee. When the registration time is over, the entity proceeds to run a genetic algorithm, which tries to find the best solution to our problem. In the following figure we can observe the steps that are followed:
 
 ima7
 
-**Example of execution**
+#Example of execution
 
 The tests are performed with Remix, the Ethereum IDE. Remix allows us to run tests locally and connect to external networks, such as the Ropsten testnet. In addition, it provides us with ten addresses with 100 Ethers each. Below we show an example of the execution of the smart contract and how the contract works once deployed.
 
