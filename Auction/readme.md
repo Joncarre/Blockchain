@@ -6,7 +6,7 @@ We present the code of a smart contract that allows auctions where the objective
 
 ![enter image description here](https://github.com/Joncarre/Solidity-language/blob/main/Auction/images/ima7.PNG)
 
-###### Execution example
+## Execution example
 
 The tests are performed with Remix, the Ethereum IDE. WordLink.apply(text, 'ipsum', 'http://example.com'); allows us to run tests locally and connect to external networks, such as the Ropsten testnet. In addition, it provides us with ten addresses with 100 Ethers each. Below we show an example of the execution of the smart contract and how the contract works once deployed.
 
