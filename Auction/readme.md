@@ -26,7 +26,7 @@ ima4
 
 Durante esta fase y las siguientes, existen ciertas restricciones en cuanto a la ejecución de funciones. Estas restricciones nos ayudan a tener una mayor organización sobre los privilegios de los roles que intervienen en la subasta, así como asegurarnos que los agentes malintencionados no puedan hacer un mal uso del contrato. Por ejemplo: si un agente intenta registrarse en la subasta antes de pagar la tasa de registro, la transacción será rechazada y se obtendrá el siguiente error:
 
-transact to Algorithm.regAgent errored: VM error: revert. revert The transaction has been reverted to the initial state. Reason provided by the contract: "Please, pay the fee before registration.
+transact to Algorithm.regAgent errored: VM error: revert. revert The transaction has been reverted to the initial state. Reason provided by the contract: "Please, pay the fee before registration".
 
 Todas las restricciones pueden ser consultadas en el código mirando las etiquetas modifier y require. Siguiendo con la ejecución, en nuestro ejemplo hemos registrados 3 agentes en la subasta y cada uno ha pagado una tasa de 2 Ether (2000000000 gwei). Cuando volvemos a cambiar a la dirección del owner y consultamos el dinero almacenado en el contrato, efectivamente observamos que hay 6 Ethers.
 
