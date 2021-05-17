@@ -40,4 +40,4 @@ Once the registration period is over, the owner can execute the withdraw functio
 
 If we look at the Ether available in each direction, we observe how the owner (first address) has about 6 Ethers more than at the beginning. In addition, about 2 Ether has been discounted to the agents who have registered for the auction. The extra Ether that has been discounted is due to the fact that the agents must also pay the cost of executing the transaction that allows them to register in the auction, being this a practically irrelevant cost. To be exact, one of these transactions costs less than $1. Moreover, it is expected that this cost is already included in the participation fee, since the entity knows in advance the cost of execution.
 
-![enter image description here](https://github.com/Joncarre/Solidity-language/blob/main/Auction/images/ima5.PNG)
+![enter image description here](https://github.com/Joncarre/Solidity-language/blob/main/Auction/images/ima5.png)
