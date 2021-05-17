@@ -12,7 +12,7 @@ The tests are performed with Remix, the Ethereum IDE. Remix allows us to run tes
 
 First, we start by looking at the addresses. Let's take the first one as the address of the entity deploying the contract.
 
-![enter image description here](https://github.com/Joncarre/Solidity-language/blob/main/Auction/images/ima0.PNG)
+![enter image description here](https://github.com/Joncarre/Solidity-language/blob/main/Auction/images/ima0.png)
 
 When deploying the contract, the entity can set certain parameters such as the registration fee, the duration of the participation period, whether the algorithm is elitist, etc. At this point, we introduce a good practice for timing the participation period, which is to use the `block.number`. We know with a fair amount of certainty that Ethereum blocks are generated roughly every 15 seconds; consequently, we can infer timestamps from these numbers rather than the spoofable timestamp fields. If we build our SC correctly, this abstraction should be invisible to the user, which allows us to use a `startBlock` and `endBlock`.
 
