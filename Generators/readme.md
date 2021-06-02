@@ -1,1 +1,3 @@
-sfgdfsg
+**Generator of clauses**
+==============
+----------
