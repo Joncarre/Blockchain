@@ -9,7 +9,6 @@ contract generatorA {
     struct Researcher {
         string name;
         bool registered;
-        Linked[] set;
     }
     mapping(address => Researcher) researchers;
     
@@ -24,7 +23,8 @@ contract generatorA {
     
     // Relation between researches and their instances
     struct Linked {
-        uint id;
+        address idResearcher;
+        uint idInstance;
         uint time;
     }
     Instance[] instances;
@@ -57,54 +57,45 @@ contract generatorA {
     }
     
     modifier notRegistered() {
-        require(!isRegistered(msg.sender), "Agent is already registered.");
+        require(researchers[msg.sender].registered == false, "Researcher is already registered.");
         _;
     }
     
     /// @notice Register a new researcher 
     function regResearcher(string memory _name) notOwner notRegistered public {
         Researcher memory newResearcher = Researcher(_name, true);
-        researchers.push(newResearcher);
+        researchers[msg.sender] = newResearcher;
     }
     
     /// @notice Generates a new researcher 
-    function createInstance() onlyOwner public view {
-        string memory lambda = "";
-        string memory solution = "";
+    function createInstance() onlyOwner public {
         symbols.push(symbols.length);
         
-        for(uint i = 0; i < 2; i++){
-        // NOTA: Cambiar la condición por número random
-            if(i < 1) {
-                symbols.push(symbols.length);
-            }
-            lambda += createClause() + " ∧ ";
-        }
-        Instance memory newInstance = Instance(Instance.length, lambda, solution, now);
     }
     
-    function createClause() internal pure returns (string memory) {
-        string memory c = "(";
+    function createClause() internal returns (string memory) {
+        uint[] memory choosen = new uint[](3);
+        bool[] memory sign = new bool[](3);
         for(uint i = 0; i < clausesLength; i++){
-            // NOTA: cambiar esto por probabilidad 50%
-            if(true){
-                c += symbols[random(symbols.length)];
+            // We choose a symbol
+            choosen[i] = symbols[random(symbols.length)];
+            // We choose its sign
+            if(random(5) < 10){ // 50% probability
+                sign[i] = true;
             }else{
-                c += "¬" + symbols[random(symbols.length)]; 
+                sign[i] = false; 
             }
-            c += " ∨ ";
         }
-        c += ")";
+        // Finally, we build the clause
+        string memory c = "";
+        
         return c;
     }
     
-    function getResearcherInstances(address _direction) public pure returns (Linked[] memory) {
+    /*function getResearcherInstances(address _direction) public pure returns (Linked[] memory) {
         return researchers[_direction].set;
-    }
+    }*/
     
-    function isRegistered(address _direction) public pure returns (bool) {
-        return researchers[_direction].registered;
-    }
     
     /// @notice Generates a random number within an interval
     /// @param _interval upper index of the (open) interval of the random value
@@ -115,4 +106,32 @@ contract generatorA {
         nonce++;
         return randNumber;
     }
+    
+    function concatenate(string memory s1, string memory s2) public pure returns (string memory) {
+        return string(abi.encodePacked(s1, s2));
+    }
+    
+    function intToString(uint _i) internal pure returns (string memory) {
+        if (_i == 0) {
+            return "0";
+        }
+        uint j = _i;
+        uint len;
+        while (j != 0) {
+            len++;
+            j /= 10;
+        }
+        bytes memory bstr = new bytes(len);
+        uint k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
+        }
+        return string(bstr);
+   }
+   
+   // -------------------------------- test functions ------------------------------------
+   function getArray() public view returns (uint[] memory){
+       return symbols;
+   }
 }
