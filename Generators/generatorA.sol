@@ -4,7 +4,6 @@ pragma solidity ^0.6.6;
 /// @title 
 /// @author J. Carrero
 contract generatorA {
-    
     // Researcher information
     struct Researcher {
         string name;
@@ -17,17 +16,15 @@ contract generatorA {
         uint id;
         string instance;
         string solution;
-        string date;
     }
-    Linked[] linkeds;
+    Instance[] instances;
     
     // Relation between researches and their instances
     struct Linked {
-        address idResearcher;
-        uint idInstance;
-        uint time;
+        uint[] idInstances;
+        uint date;
     }
-    Instance[] instances;
+    mapping(address => Linked) links;
     
     // General stuffs
     address owner;
@@ -57,7 +54,7 @@ contract generatorA {
     }
     
     modifier notRegistered() {
-        require(researchers[msg.sender].registered == false, "Researcher is already registered.");
+        require(!researchers[msg.sender].registered, "Researcher is already registered.");
         _;
     }
     
@@ -69,33 +66,55 @@ contract generatorA {
     
     /// @notice Generates a new researcher 
     function createInstance() onlyOwner public {
+        string memory fi = ""; // empty initialitation
         symbols.push(symbols.length);
-        
+        for(uint i = 0; i < 2; i++){
+            if(random(100) < p) // [0, 99] < p
+                symbols.push(symbols.length);  
+        }
+        fi = conca2(fi, createClause());
+        while(random(100) < q){ // [0, 99] < q
+            for(uint i = 0; i < 3; i++){
+                if(random(100) < p) // [0, 99] < p
+                    symbols.push(symbols.length);  
+            }
+            fi = conca3(fi, " ∧ ", createClause()); 
+        }
+        Instance memory newInstance = Instance(instances.length, fi, "");
+        instances.push(newInstance);
     }
     
-    function createClause() internal returns (string memory) {
-        uint[] memory choosen = new uint[](3);
-        bool[] memory sign = new bool[](3);
+    function createClause() onlyOwner public returns (string memory) {
+        string memory c = "(";
         for(uint i = 0; i < clausesLength; i++){
-            // We choose a symbol
-            choosen[i] = symbols[random(symbols.length)];
-            // We choose its sign
-            if(random(5) < 10){ // 50% probability
-                sign[i] = true;
-            }else{
-                sign[i] = false; 
-            }
+            if(random(100) < 50) // [0, 9] < 5 => 50% probability
+                c = conca3(c, "x", intToString(symbols[random(symbols.length)]));
+            else
+                c = conca4(c, "¬", "x", intToString(symbols[random(symbols.length)]));
+            // We need to add a new symbol in every iteration except for the last one
+            if(i < clausesLength-1)
+                c = conca2(c, " ∨ ");
         }
-        // Finally, we build the clause
-        string memory c = "";
-        
+        c = conca2(c, ")");
         return c;
     }
     
-    /*function getResearcherInstances(address _direction) public pure returns (Linked[] memory) {
-        return researchers[_direction].set;
-    }*/
+    function getSetInstance(uint _size) notRegistered public {
+        uint[] memory set = new uint[](_size);
+        for(uint i = 0; i < _size; i++)
+            set[i] = random(instances.length);
+        Linked memory newLink = Linked(set, now);
+        links[msg.sender] = newLink;
+    }
     
+    function getResearcherInformation(address _address) onlyOwner public view returns (uint[] memory, uint) {
+        return (links[_address].idInstances, links[_address].date);
+    }
+    
+    function setSolution(string memory _solution, uint _id) public {
+        require(_id < instances.length && _id >= 0, "Invalid instance index.");
+        instances[_id].solution = _solution;
+    }
     
     /// @notice Generates a random number within an interval
     /// @param _interval upper index of the (open) interval of the random value
@@ -105,10 +124,6 @@ contract generatorA {
         uint randNumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % _interval;
         nonce++;
         return randNumber;
-    }
-    
-    function concatenate(string memory s1, string memory s2) public pure returns (string memory) {
-        return string(abi.encodePacked(s1, s2));
     }
     
     function intToString(uint _i) internal pure returns (string memory) {
@@ -128,10 +143,27 @@ contract generatorA {
             _i /= 10;
         }
         return string(bstr);
-   }
+    }
    
-   // -------------------------------- test functions ------------------------------------
-   function getArray() public view returns (uint[] memory){
+    function conca2(string memory s1, string memory s2) internal pure returns (string memory) {
+        return string(abi.encodePacked(s1, s2));
+    }
+    
+    function conca3(string memory s1, string memory s2, string memory s3) internal pure returns (string memory) {
+        return string(abi.encodePacked(s1, s2, s3));
+    }
+    
+    function conca4(string memory s1, string memory s2, string memory s3, string memory s4) internal pure returns (string memory) {
+        return string(abi.encodePacked(s1, s2, s3, s4));
+    }
+   
+    // -------------------------------- Auxiliar functions --------------------------------
+    function getArray() public view returns (uint[] memory){
        return symbols;
-   }
+    }
+   
+    function getInstance(uint _index) public view returns (uint, string memory, string memory){
+        return (instances[_index].id, instances[_index].instance, instances[_index].solution);
+    }
 }
+
