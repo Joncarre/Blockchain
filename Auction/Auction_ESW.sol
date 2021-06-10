@@ -158,7 +158,7 @@ contract Algorithm {
     function crossover() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
             for(uint i = 0; i < geneLength; i++){
-                if(random(crossoverRate) < 10)
+                if(random(10) <= crossoverRate)
                     population[k].genes[i] = population[random(population.length)].genes[i];
                 else
                     population[k].genes[i] = population[random(population.length)].genes[i];
@@ -170,7 +170,7 @@ contract Algorithm {
     function mutate() onlyOwner onlyAfterEnd public {
         for(uint k = elitism; k < population.length; k++){
             for(uint i = 0; i < geneLength; i++){
-                if(random(mutationRate) < 10){
+                if(random(10) <= mutationRate){
                     population[k].genes[i] = random(agents.length);
                 }
             }
