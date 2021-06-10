@@ -58,13 +58,18 @@ contract generatorA {
         _;
     }
     
-    /// @notice Register a new researcher 
+    modifier Registered() {
+        require(researchers[msg.sender].registered, "You must be registered");
+        _;
+    }
+    
+    /// @notice Registers a new Researcher 
     function regResearcher(string memory _name) notOwner notRegistered public {
         Researcher memory newResearcher = Researcher(_name, true);
         researchers[msg.sender] = newResearcher;
     }
     
-    /// @notice Generates a new researcher 
+    /// @notice Generates a new Instance 
     function createInstance() onlyOwner public {
         string memory fi = ""; // empty initialitation
         symbols.push(symbols.length);
@@ -84,7 +89,8 @@ contract generatorA {
         instances.push(newInstance);
     }
     
-    function createClause() onlyOwner public returns (string memory) {
+    // @notice Creates a new clause
+    function createClause() internal returns (string memory) {
         string memory c = "(";
         for(uint i = 0; i < clausesLength; i++){
             if(random(100) < 50) // [0, 9] < 5 => 50% probability
@@ -99,7 +105,7 @@ contract generatorA {
         return c;
     }
     
-    function getSetInstance(uint _size) notRegistered public {
+    function getSetInstance(uint _size) Registered public {
         uint[] memory set = new uint[](_size);
         for(uint i = 0; i < _size; i++)
             set[i] = random(instances.length);
@@ -107,11 +113,12 @@ contract generatorA {
         links[msg.sender] = newLink;
     }
     
-    function getResearcherInformation(address _address) onlyOwner public view returns (uint[] memory, uint) {
+    function getResearcherInformation(address _address) Registered public view returns (uint[] memory, uint) {
+        require(msg.sender == _address, "You can only access your own data");
         return (links[_address].idInstances, links[_address].date);
     }
     
-    function setSolution(string memory _solution, uint _id) public {
+    function setSolution(string memory _solution, uint _id) onlyOwner public {
         require(_id < instances.length && _id >= 0, "Invalid instance index.");
         instances[_id].solution = _solution;
     }
@@ -157,12 +164,13 @@ contract generatorA {
         return string(abi.encodePacked(s1, s2, s3, s4));
     }
    
-    // -------------------------------- Auxiliar functions --------------------------------
-    function getArray() public view returns (uint[] memory){
+    // -------------------------------- Support functions --------------------------------
+    
+    function getArray() onlyOwner public view returns (uint[] memory){
        return symbols;
     }
    
-    function getInstance(uint _index) public view returns (uint, string memory, string memory){
+    function getInstance(uint _index) onlyOwner public view returns (uint, string memory, string memory){
         return (instances[_index].id, instances[_index].instance, instances[_index].solution);
     }
 }
