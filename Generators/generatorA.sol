@@ -1,4 +1,8 @@
 // SPDX-License-Identifier: MIT
+// Generales:
+// - Hacer una inferaz web sencilla
+// - Dame la información del usuario: que instancias tiene, cuantas veces ha pedido instancias, información de su ORCID
+
 pragma solidity ^0.6.6;
 
 /// @title 
@@ -8,10 +12,13 @@ contract generatorA {
     struct Researcher {
         string name;
         bool registered;
+        // NOTA: nueva var, solución que propone para las instancias (las instancias se generan una a una)
     }
+    // NOTA: las direcciones son ORCID en vez de address de wallet
     mapping(address => Researcher) researchers;
     
     // Instance information
+    // NOTA: las instancias se generan cuando un investigador las pide
     struct Instance {
         uint id;
         string instance;
@@ -73,16 +80,16 @@ contract generatorA {
     function createInstance() onlyOwner public {
         string memory fi = ""; // empty initialitation
         symbols.push(symbols.length);
-        for(uint i = 0; i < 2; i++){
+        for(uint i = 0; i < 2; i++)
             if(random(100) < p) // [0, 99] < p
                 symbols.push(symbols.length);  
-        }
+        
         fi = conca2(fi, createClause());
         while(random(100) < q){ // [0, 99] < q
-            for(uint i = 0; i < 3; i++){
+            for(uint i = 0; i < 3; i++)
                 if(random(100) < p) // [0, 99] < p
                     symbols.push(symbols.length);  
-            }
+            
             fi = conca3(fi, " ∧ ", createClause()); 
         }
         Instance memory newInstance = Instance(instances.length, fi, "");
@@ -174,4 +181,3 @@ contract generatorA {
         return (instances[_index].id, instances[_index].instance, instances[_index].solution);
     }
 }
-
