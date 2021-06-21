@@ -163,7 +163,7 @@ contract generatorB {
         return string(abi.encodePacked(s1, s2, s3, s4));
     }
    
-    // -------------------------------- Support functions --------------------------------
+    // -------------------------------- Support functions -------------------------------
     
     function getArray() onlyOwner public view returns (uint[] memory){
        return symbols;
