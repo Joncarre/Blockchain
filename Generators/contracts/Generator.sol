@@ -94,7 +94,7 @@ contract generator is VRFConsumerBase {
         return requestRandomness(keyHash, fee, userProvidedSeed);
     }
     
-    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal virtual override {
         randomResult = randomness.mod(100);
     }
     
