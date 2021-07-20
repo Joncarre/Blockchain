@@ -1,4 +1,4 @@
-**Generator of clauses**
+**Generator**
 ==============
 ----------
 
