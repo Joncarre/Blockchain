@@ -2,7 +2,7 @@
 // Generales:
 // - Dame la información del usuario: que instancias tiene, cuantas veces ha pedido instancias, información de su ORCID
 
-pragma solidity ^0.6.6;
+pragma solidity >=0.5.16;
 
 import "https://raw.githubusercontent.com/smartcontractkit/chainlink/master/evm-contracts/src/v0.6/VRFConsumerBase.sol";
 
