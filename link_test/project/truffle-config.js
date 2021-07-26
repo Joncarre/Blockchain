@@ -1,8 +1,8 @@
 const HDWalletProvider = require('@truffle/hdwallet-provider')
 require('dotenv').config()
 
-const mnemonic = process.env.MNEMONIC
-const url = process.env.RPC_URL
+const mnemonic = "orange endorse control wrist surface borrow someone pact food view naive salute"
+const project = "9e26eee8ea4c498bbeab559b287115b6"
 
 module.exports = {
   networks: {
@@ -25,7 +25,7 @@ module.exports = {
     },
     kovan: {
       provider: () => {
-        return new HDWalletProvider(mnemonic, url)
+        return new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/" + project)
       },
       network_id: '42',
       skipDryRun: true
