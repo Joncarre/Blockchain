@@ -5602,7 +5602,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.2",
-  "updatedAt": "2021-07-26T00:55:05.728Z",
+  "updatedAt": "2021-07-26T01:21:04.855Z",
   "devdoc": {
     "methods": {},
     "title": "MockV3Aggregator"

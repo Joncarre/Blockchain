@@ -23,8 +23,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_priceFeed\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"getLatestPrice\",\"outputs\":[{\"internalType\":\"int256\",\"name\":\"\",\"type\":\"int256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{\"constructor\":\"Network: Kovan Aggregator: ETH/USD Address: 0x9326BFA02ADD2366b30bacB125260Af641031331\",\"getLatestPrice()\":{\"notice\":\"Returns the latest price\"}}}},\"settings\":{\"compilationTarget\":{\"project:/contracts/PriceConsumerV3.sol\":\"PriceConsumerV3\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol\":{\"keccak256\":\"0x1862840d741dedb36e774534b877a13b5187555e3b78b8d2815f898b0dc02268\",\"urls\":[\"bzz-raw://64a15f4349aea6e60703f581a6280b71d6adb35ee74d2f3c4f130a2adc3efee3\",\"dweb:/ipfs/QmdVoSQvGfJNPnjQsAs7ZN3ueWghzTa72jSqzhGiQNDpkL\"]},\"project:/contracts/PriceConsumerV3.sol\":{\"keccak256\":\"0x72f9c7487ab8576b50e8cfa7b042f04cd4a9dfb8887defd27d00252167ab500a\",\"urls\":[\"bzz-raw://4a40ad57056eddbe880ea9e80b3ce066bbb63b8e00eccf60564b64b79fba1666\",\"dweb:/ipfs/QmRUgU5616kTtAZZTWffb6JJBsZrwFhus9PKsJPhbAQN9n\"]}},\"version\":1}",
@@ -34,7 +33,7 @@
   "sourceMap": "135:657:21:-:0;;;337:101;5:9:-1;2:2;;;27:1;24;17:12;2:2;337:101:21;;;;;;;;;;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;337:101:21;;;;;;;;;;;;;;;;420:10;386:9;;:45;;;;;;;;;;;;;;;;;;337:101;135:657;;;;;;",
   "deployedSourceMap": "135:657:21:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;135:657:21;;;;;;;;;;;;;;;;12:1:-1;9;2:12;492:298:21;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;539:3;602:9;734;;;;;;;;;;;:25;;;:27;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;734:27:21;;;;8:9:-1;5:2;;;45:16;42:1;39;24:38;77:16;74:1;67:27;5:2;734:27:21;;;;;;;15:3:-1;10;7:12;4:2;;;32:1;29;22:12;4:2;734:27:21;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;554:207;;;;;;778:5;771:12;;;492:298;:::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.6.6;\n\nimport \"@chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol\";\n\ncontract PriceConsumerV3 {\n\n    AggregatorV3Interface internal priceFeed;\n    /**\n     * Network: Kovan\n     * Aggregator: ETH/USD\n     * Address: 0x9326BFA02ADD2366b30bacB125260Af641031331\n     */\n    constructor(address _priceFeed) public {\n        priceFeed = AggregatorV3Interface(_priceFeed);\n    }\n\n    /**\n     * Returns the latest price\n     */\n    function getLatestPrice() public view returns (int) {\n        (\n            /* uint80 roundID */,\n            int price,\n            /* uint startedAt */,\n            /* uint timeStamp */,\n            /* uint80 answeredInRound */\n        ) = priceFeed.latestRoundData();\n        return price;\n    }\n}\n",
-  "sourcePath": "/home/jonathan/Documents/Github/Solidity-language/link_test/project/contracts/PriceConsumerV3.sol",
+  "sourcePath": "/home/jonathan/Documents/Github/Solidity-language/Clean project/project/contracts/PriceConsumerV3.sol",
   "ast": {
     "absolutePath": "project:/contracts/PriceConsumerV3.sol",
     "exportedSymbols": {
@@ -943,8 +942,7 @@
     }
   },
   "schemaVersion": "3.4.2",
-  "updatedAt": "2021-07-26T01:06:17.889Z",
-  "networkType": "ethereum",
+  "updatedAt": "2021-07-26T01:21:04.899Z",
   "devdoc": {
     "methods": {}
   },
