@@ -17,7 +17,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -30,7 +31,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -66,7 +68,7 @@
   "sourceMap": "57:478:19:-:0;;;210:50;5:9:-1;2:2;;;27:1;24;17:12;2:2;210:50:19;245:10;237:5;;:18;;;;;;;;;;;;;;;;;;57:478;;;;;;",
   "deployedSourceMap": "57:478:19:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;57:478:19;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;372:161:19;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;372:161:19;;;;;;;;;;;;;;;;;;;:::i;:::-;;81:20;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;105:37;;;:::i;:::-;;;;;;;;;;;;;;;;;;;264:104;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;264:104:19;;;;;;;;;;;;;;;;;:::i;:::-;;372:161;193:5;;;;;;;;;;;179:19;;:10;:19;;;175:26;;;433:19:::1;466:10;433:44;;483:8;:21;;;505:22;;483:45;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;5:9:-1;2:2;;;27:1;24::::0;17:12:::1;2:2;483:45:19;;;;8:9:-1;5:2;;;45:16;42:1;39::::0;24:38:::1;77:16;74:1;67:27;5:2;483:45:19;;;;200:1;175:26:::0;372:161;:::o;81:20::-;;;;;;;;;;;;;:::o;105:37::-;;;;:::o;264:104::-;193:5;;;;;;;;;;;179:19;;:10;:19;;;175:26;;;354:9:::1;329:22;:34;;;;175:26:::0;264:104;:::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.6.6;\n\ncontract Migrations {\n  address public owner;\n  uint256 public lastCompletedMigration;\n\n  modifier restricted() {\n    if (msg.sender == owner) _;\n  }\n\n  constructor() public {\n    owner = msg.sender;\n  }\n\n  function setCompleted(uint256 completed) public restricted {\n    lastCompletedMigration = completed;\n  }\n\n  function upgrade(address newAddress) public restricted {\n    Migrations upgraded = Migrations(newAddress);\n    upgraded.setCompleted(lastCompletedMigration);\n  }\n}\n",
-  "sourcePath": "/home/jonathan/Documents/Github/Solidity-language/Clean project/project/contracts/Migrations.sol",
+  "sourcePath": "/home/jonathan/Documents/Github/Solidity-language/DApp/project/contracts/Migrations.sol",
   "ast": {
     "absolutePath": "project:/contracts/Migrations.sol",
     "exportedSymbols": {
@@ -1505,12 +1507,13 @@
     "42": {
       "events": {},
       "links": {},
-      "address": "0xf65e76f6e00AF42528fCf0df695692F900969c86",
-      "transactionHash": "0x5a5c33cf6242d39517d0709de756f3e173a361fdefc87cd74eb1f000b9755c3c"
+      "address": "0x92E464cfC8fbFB4114279d15cb8aA19C5BcF5dc5",
+      "transactionHash": "0x4e1de71a8788c8ce95717352ab9a7f5c431ac47924a9925f9d2939a97c3c1f2c"
     }
   },
   "schemaVersion": "3.4.2",
-  "updatedAt": "2021-07-26T01:21:04.891Z",
+  "updatedAt": "2021-07-26T12:22:13.030Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
