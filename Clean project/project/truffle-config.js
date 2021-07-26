@@ -28,7 +28,9 @@ module.exports = {
         return new HDWalletProvider(mnemonic, "https://kovan.infura.io/v3/" + project)
       },
       network_id: '42',
-      skipDryRun: true
+      skipDryRun: true,
+      networkCheckTimeout: 8000000,
+      timeoutBlocks: 4000
     },
   },
   compilers: {
