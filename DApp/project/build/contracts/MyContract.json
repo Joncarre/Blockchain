@@ -5080,12 +5080,12 @@
         }
       },
       "links": {},
-      "address": "0x9F81375E6BF80833aF0353FFb0051637Fe72339C",
-      "transactionHash": "0xf83926d06ac0d50de17ee607781d7d046e5b7003e361a43d7fc453841f69e8ec"
+      "address": "0xCEaC11a34feD4Eff05dF86921f0e738faBE999F4",
+      "transactionHash": "0x3b6b897d337f4ae4710f9141d576076e910cc12f66c5c76b59405c6f30e3e9bd"
     }
   },
   "schemaVersion": "3.4.2",
-  "updatedAt": "2021-07-26T12:20:49.590Z",
+  "updatedAt": "2021-07-26T17:41:26.576Z",
   "networkType": "ethereum",
   "devdoc": {
     "details": "This contract is designed to work on multiple networks, including local test networks",
