@@ -4,6 +4,8 @@ import getWeb3 from "./getWeb3";
 
 import "./App.css";
 
+
+
 class App extends Component {
   state = { storageValue: 0, web3: null, accounts: null, contract: null };
 
@@ -22,6 +24,7 @@ class App extends Component {
         deployedNetwork && deployedNetwork.address,
       );
 
+      instance.options.address = "0xA65990EC0CA555d2eCDD1d84E9D1397CFA967E60"
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
@@ -39,7 +42,7 @@ class App extends Component {
     const { accounts, contract } = this.state;
 
     // Stores a given value, 5 by default.
-    await contract.methods.set(5).send({ from: accounts[0] });
+    await contract.methods.set(1221).send({ from: accounts[0] });
 
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.get().call();
