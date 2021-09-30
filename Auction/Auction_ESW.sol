@@ -160,8 +160,6 @@ contract Algorithm {
             for(uint i = 0; i < geneLength; i++){
                 if(random(10) <= crossoverRate)
                     population[k].genes[i] = population[random(population.length)].genes[i];
-                else
-                    population[k].genes[i] = population[random(population.length)].genes[i];
             }
         }
     }
