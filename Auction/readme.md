@@ -1,4 +1,4 @@
-**Egalitarian social welfare into Ethereum blockchain**
+**Egalitarian social welfare auction into Ethereum blockchain**
 ==============
 ----------
 
