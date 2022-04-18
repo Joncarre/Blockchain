@@ -259,7 +259,7 @@ contract Generator is VRFConsumerBase {
     }
 
     /// @notice Function to convert int to string
-    /// @param _i n umber to convert
+    /// @param _i number to convert
     /// @return _uintAsString the string returned
     function intToString(uint256 _i) internal pure returns (string memory _uintAsString) {
         if (_i == 0) {
