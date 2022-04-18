@@ -183,7 +183,7 @@ contract Generator is VRFConsumerBase {
         }
     }
 
-   /// @notice Generates a new Instance from B generator
+    /// @notice Generates a new Instance from B generator
     /// @param _p, _q, _secret, _numInstances parameters used to generate the instance, password from the user and number of instances
     function createBInstance(uint256 _p, uint256 _q, uint256 _secret, uint256 _numInstances) public {
         uint256[] memory randoms = expand();
