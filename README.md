@@ -31,3 +31,6 @@ The `Auction.sol` contract demonstrates several core Solidity concepts:
 *   **Ether Handling:** Managing registration fees (`receive()` function, `payable` addresses, `call`).
 
 Feel free to explore the `Auction` directory and other projects within this repository to learn more about Solidity development.
+
+---
+*Created by Jonathan Carrero*
